@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException, Depends
+from product_service import setting
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from typing import List
 from contextlib import asynccontextmanager
 from product_service.models import Product,Product_Create, Product_Update
 from product_service.db import create_tables, engine, get_session
 from aiokafka import AIOKafkaProducer
-
+from aiokafka import AIOKafkaProducer
+from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 
 async def get_kafka_producer():
     producer = AIOKafkaProducer(bootstrap_servers='broker:19092')
@@ -28,7 +30,6 @@ async def create_topic():
         print(f"Failed to create topic '{setting.KAFKA_ORDER_TOPIC}': {e}")
     finally:
         await admin_client.close()
-
 
 
 
@@ -57,21 +58,21 @@ async def create_product(product: Product_Create, session: Session = Depends(get
 
 
 
-# @app.get('/products/', response_model=List[Product])
-# async def get_all_products(session: Session = Depends(get_session)):
-#     products = session.exec(select(Product)).all()
-#     if products:
-#         return products
-#     else:
-#         raise HTTPException(status_code=404, detail="No products found")
+@app.get('/products/', response_model=List[Product])
+async def get_all_products(session: Session = Depends(get_session)):
+    products = session.exec(select(Product)).all()
+    if products:
+        return products
+    else:
+        raise HTTPException(status_code=404, detail="No products found")
 
-# @app.get('/products/{id}', response_model=Product)
-# async def get_single_product(id: int, session: Session = Depends(get_session)):
-#     product = session.get(Product, id)
-#     if product:
-#         return product
-#     else:
-#         raise HTTPException(status_code=404, detail="Product not found")
+@app.get('/products/{id}', response_model=Product)
+async def get_single_product(id: int, session: Session = Depends(get_session)):
+    product = session.get(Product, id)
+    if product:
+        return product
+    else:
+        raise HTTPException(status_code=404, detail="Product not found")
 
 # @app.put('/products/{id}', response_model=Product)
 # async def edit_product(id: int, product: Product_Update, session: Session = Depends(get_session)):

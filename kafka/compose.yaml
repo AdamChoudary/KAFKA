@@ -13,7 +13,7 @@ services:
 
   app-db:
     build:
-      context: ./db-service
+      context: ./product_service
       dockerfile: Dockerfile
     container_name: pgdb-app
     depends_on:

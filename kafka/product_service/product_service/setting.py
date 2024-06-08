@@ -1,5 +1,5 @@
-from starlette.config import Config # type: ignore
-from starlette.datastructures import Secret # type: ignore
+from starlette.config import Config 
+from starlette.datastructures import Secret 
 
 try:
     config = Config(".env")
@@ -7,7 +7,8 @@ try:
 except FileNotFoundError:
     config = Config()
 
-#DATABASE_URL = config("DATABASE_URL", cast=Secret)
+
+DATABASE_URL = config("DATABASE_URL", cast=Secret)
 #TEST_DATABASE_URL = config("TEST_DATABASE_URL", cast=Secret)
 BOOTSTRAP_SERVER = config("KAFKA_SERVER", cast=str)
 KAFKA_ORDER_TOPIC = config("KAFKA_ORDER_TOPIC", cast=str)
